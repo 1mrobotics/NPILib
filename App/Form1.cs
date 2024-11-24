@@ -117,8 +117,9 @@ namespace XpandNPIManager
             return files;
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
-
-
+        }
     }
 }

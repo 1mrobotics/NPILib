@@ -99,7 +99,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NPILib\NPILib.csproj">
+    <ProjectReference Include="..\NPILib.csproj">
       <Project>{996ffb26-15ba-4739-9c1e-50d5188add2d}</Project>
       <Name>NPILib</Name>
     </ProjectReference>

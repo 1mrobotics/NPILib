@@ -10,3 +10,9 @@ C:\NPILib\NPILib\obj\Debug\NPILib.csproj.AssemblyReference.cache
 C:\NPILib\NPILib\obj\Debug\NPILib.csproj.CoreCompileInputs.cache
 C:\NPILib\NPILib\obj\Debug\NPILib.dll
 C:\NPILib\NPILib\obj\Debug\NPILib.pdb
+C:\1MRobotics\NPILib\bin\Debug\NPILib.dll
+C:\1MRobotics\NPILib\bin\Debug\NPILib.pdb
+C:\1MRobotics\NPILib\obj\Debug\NPILib.csproj.AssemblyReference.cache
+C:\1MRobotics\NPILib\obj\Debug\NPILib.csproj.CoreCompileInputs.cache
+C:\1MRobotics\NPILib\obj\Debug\NPILib.dll
+C:\1MRobotics\NPILib\obj\Debug\NPILib.pdb
