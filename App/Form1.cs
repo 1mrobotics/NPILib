@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using NPILib;
 using System.Collections.Generic;
 using System.IO;
+using XpandNPIManager.Helpers;
 
 namespace XpandNPIManager
 {
@@ -18,7 +19,7 @@ namespace XpandNPIManager
             try
             {
                 // Step 1: Prompt the user to paste a list of part numbers
-                string partNumbersInput = PromptForPartNumbers();
+                string partNumbersInput = PromptHelper.PromptForPartNumbers();
                 if (string.IsNullOrWhiteSpace(partNumbersInput))
                 {
                     MessageBox.Show("No part numbers provided. Operation canceled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -27,7 +28,7 @@ namespace XpandNPIManager
                 List<string> partNumbers = new List<string>(partNumbersInput.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries));
 
                 // Step 2: Open a folder browser dialog to select the output ZIP location
-                string outputZipPath = PromptForOutputZipLocation();
+                string outputZipPath = PromptHelper.PromptForOutputZipLocation();
                 if (string.IsNullOrWhiteSpace(outputZipPath))
                 {
                     MessageBox.Show("No output location selected. Operation canceled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -56,49 +57,7 @@ namespace XpandNPIManager
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private string PromptForPartNumbers()
-        {
-            using (Form inputForm = new Form())
-            {
-                inputForm.Width = 400;
-                inputForm.Height = 300;
-                inputForm.Text = "Enter Part Numbers (one per line)";
 
-                TextBox textBox = new TextBox()
-                {
-                    Multiline = true,
-                    Dock = DockStyle.Fill,
-                    ScrollBars = ScrollBars.Vertical
-                };
-                inputForm.Controls.Add(textBox);
-
-                Button okButton = new Button() { Text = "OK", Dock = DockStyle.Bottom };
-                okButton.Click += (s, e) => inputForm.DialogResult = DialogResult.OK;
-                inputForm.Controls.Add(okButton);
-
-                if (inputForm.ShowDialog() == DialogResult.OK)
-                {
-                    return textBox.Text;
-                }
-            }
-            return null;
-        }
-        private string PromptForOutputZipLocation()
-        {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Title = "Select Output ZIP Location";
-                saveFileDialog.Filter = "ZIP files (*.zip)|*.zip";
-                saveFileDialog.DefaultExt = "zip";
-                saveFileDialog.AddExtension = true;
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    return saveFileDialog.FileName;
-                }
-            }
-            return null;
-        }
         private List<ProdFile> ScanFiles(string rootDirectory)
         {
             List<ProdFile> files = new List<ProdFile>();
