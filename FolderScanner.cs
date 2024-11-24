@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System;
-
-
 
 namespace NPILib
 {
@@ -47,7 +45,6 @@ namespace NPILib
                 return new List<ProdFile>();
             }
         }
-
 
         public static List<ProdFile> ScanFolderRecursively(string folderPath)
         {

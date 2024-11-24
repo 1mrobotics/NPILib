@@ -54,7 +54,20 @@ namespace XpandNPIManager
                 // Step 6: Log PN files list
                 string pnFilesLogPath = CSVCreator.CreatePNFilesCSV(pnFilesList, pnFilesLogDir);
 
-                // Step 7: Prompt user for ZIP folder location
+                // Step 7: Generate PDF Report (no hardcoded name here)
+                string pdfReportPath;
+                try
+                {
+                    pdfReportPath = ReportGenerator.GeneratePNFilesReport(pnFilesList, pnFilesLogDir);
+                }
+                catch (Exception pdfEx)
+                {
+                    // Log the error and continue with the flow
+                    MessageBox.Show($"Failed to create PDF report: {pdfEx.Message}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    pdfReportPath = "Failed to generate PDF report.";
+                }
+
+                // Step 8: Prompt user for ZIP folder location
                 string outputZipPath = PromptHelper.PromptForOutputZipLocation();
                 if (string.IsNullOrWhiteSpace(outputZipPath))
                 {
@@ -62,11 +75,11 @@ namespace XpandNPIManager
                     return;
                 }
 
-                // Step 8: Create ZIP folder
+                // Step 9: Create ZIP folder
                 PNFileCompressor.CompressFiles(pnFilesList, outputZipPath);
 
-                // Step 9: Notify user of success
-                MessageBox.Show($"ZIP file created successfully.\n\nProduction Files CSV: {filesLogPath}\nPN Files CSV: {pnFilesLogPath}\nZIP: {outputZipPath}",
+                // Step 10: Notify user of success
+                MessageBox.Show($"ZIP file created successfully.\n\nProduction Files CSV: {filesLogPath}\nPN Files CSV: {pnFilesLogPath}\nPDF Report: {pdfReportPath}\nZIP: {outputZipPath}",
                     "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -74,6 +87,10 @@ namespace XpandNPIManager
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+
+
 
         private List<ProdFile> ScanFiles(string rootDirectory)
         {

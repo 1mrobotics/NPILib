@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace NPILib
 {
     public static class PNFileProcessor
@@ -18,18 +17,20 @@ namespace NPILib
             if (string.IsNullOrWhiteSpace(partNumber))
                 throw new ArgumentException("Part number cannot be null or empty.", nameof(partNumber));
 
-            var matchingFiles = files.Where(f => f.PartNumber == partNumber && f.IsProductionFile).ToList();
+            var matchingFiles = files
+                .Where(f => string.Equals(f.PartNumber, partNumber, StringComparison.OrdinalIgnoreCase) && f.IsProductionFile)
+                .ToList();
 
             if (!matchingFiles.Any())
                 return new PNFiles(partNumber, "N/A", "N/A", "N/A", "N/A");
 
             var xtFile = matchingFiles
-                .Where(f => f.Type == "x_t")
+                .Where(f => string.Equals(f.Type, "x_t", StringComparison.OrdinalIgnoreCase))
                 .OrderByDescending(f => f.Rev)
                 .FirstOrDefault();
 
             var pdfFile = matchingFiles
-                .Where(f => f.Type == "pdf")
+                .Where(f => string.Equals(f.Type, "pdf", StringComparison.OrdinalIgnoreCase))
                 .OrderByDescending(f => f.Rev)
                 .FirstOrDefault();
 
@@ -45,7 +46,7 @@ namespace NPILib
         /// <summary>
         /// Processes a list of part numbers and files to return a list of PNFiles instances.
         /// </summary>
-        /// <param name="files">List of File instances.</param>
+        /// <param name="files">List of ProdFile instances.</param>
         /// <param name="partNumbers">List of part numbers to process.</param>
         /// <returns>List of PNFiles instances populated for each part number.</returns>
         public static List<PNFiles> GetPNFilesForPartNumbers(List<ProdFile> files, List<string> partNumbers)

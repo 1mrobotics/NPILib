@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace NPILib
 {
@@ -30,17 +31,20 @@ namespace NPILib
             LastModified = GetLastModifiedTime(path); // Set the last modified time using Time class
         }
 
+
         private string GetFileType(string path)
         {
             string extension = System.IO.Path.GetExtension(path);
-            return string.IsNullOrWhiteSpace(extension) ? "unknown" : extension.TrimStart('.').ToLower();
+            return string.IsNullOrWhiteSpace(extension) ? "unknown" : extension.TrimStart('.').ToLowerInvariant();
         }
+
 
         private void SetPartNumberAndRev(string path)
         {
             string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(path);
 
-            var match = System.Text.RegularExpressions.Regex.Match(fileNameWithoutExtension, @"_Rev([A-Z])");
+            var match = System.Text.RegularExpressions.Regex.Match(fileNameWithoutExtension, @"_Rev([A-Z])", RegexOptions.IgnoreCase);
+
             if (match.Success)
             {
                 PartNumber = fileNameWithoutExtension.Substring(0, match.Index);
@@ -55,8 +59,12 @@ namespace NPILib
 
         private void SetIsProductionFile()
         {
-            IsProductionFile = (Type == "pdf" || Type == "x_t") && !string.IsNullOrEmpty(Rev) && System.Text.RegularExpressions.Regex.IsMatch(Rev, "^[A-Z]$");
+            IsProductionFile = (string.Equals(Type, "pdf", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(Type, "x_t", StringComparison.OrdinalIgnoreCase)) &&
+                                !string.IsNullOrEmpty(Rev) &&
+                                System.Text.RegularExpressions.Regex.IsMatch(Rev, "^[A-Z]$", RegexOptions.IgnoreCase);
         }
+
 
         private Time GetLastModifiedTime(string path)
         {

@@ -72,3 +72,9 @@ C:\1MRobotics\NPILib\bin\Debug\itext.sign.xml
 C:\1MRobotics\NPILib\bin\Debug\itext.styledxmlparser.xml
 C:\1MRobotics\NPILib\bin\Debug\itext.svg.xml
 C:\1MRobotics\NPILib\bin\Debug\Newtonsoft.Json.xml
+C:\1MRobotics\NPILib\bin\Debug\PdfSharp.Charting.dll
+C:\1MRobotics\NPILib\bin\Debug\PdfSharp.dll
+C:\1MRobotics\NPILib\bin\Debug\PdfSharp.xml
+C:\1MRobotics\NPILib\bin\Debug\PdfSharp.Charting.xml
+C:\1MRobotics\NPILib\bin\Debug\de\PdfSharp.resources.dll
+C:\1MRobotics\NPILib\bin\Debug\de\PdfSharp.Charting.resources.dll
