@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Windows.Forms;
-using NPILib;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
+using NPILib;
 using XpandNPIManager.Helpers;
 
 namespace XpandNPIManager
 {
     public partial class Form1 : Form
     {
+        private readonly string logDirectoryBase = @"\\PDM\ERP-Data\Files\Logs";
+
         public Form1()
         {
             InitializeComponent();
@@ -27,7 +29,32 @@ namespace XpandNPIManager
                 }
                 List<string> partNumbers = new List<string>(partNumbersInput.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries));
 
-                // Step 2: Open a folder browser dialog to select the output ZIP location
+                // Step 2: Ensure log directories exist
+                string filesLogDir = Path.Combine(logDirectoryBase, "Files");
+                string pnFilesLogDir = Path.Combine(logDirectoryBase, "PNFiles");
+                EnsureDirectoryExists(filesLogDir);
+                EnsureDirectoryExists(pnFilesLogDir);
+
+                // Step 3: Scan production files
+                string scanPath = @"\\PDM\ERP-Data\Files";
+                if (!Directory.Exists(scanPath))
+                {
+                    MessageBox.Show($"The directory '{scanPath}' does not exist. Operation canceled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                List<ProdFile> productionFiles = ScanFiles(scanPath);
+
+                // Step 4: Log production files list
+                Files filesInstance = new Files { FileList = productionFiles };
+                string filesLogPath = CSVCreator.CreateFilesCSV(filesInstance, filesLogDir);
+
+                // Step 5: Create PNFiles using part numbers and production files
+                List<PNFiles> pnFilesList = PNFileProcessor.GetPNFilesForPartNumbers(productionFiles, partNumbers);
+
+                // Step 6: Log PN files list
+                string pnFilesLogPath = CSVCreator.CreatePNFilesCSV(pnFilesList, pnFilesLogDir);
+
+                // Step 7: Prompt user for ZIP folder location
                 string outputZipPath = PromptHelper.PromptForOutputZipLocation();
                 if (string.IsNullOrWhiteSpace(outputZipPath))
                 {
@@ -35,22 +62,12 @@ namespace XpandNPIManager
                     return;
                 }
 
-                // Step 3: Scan \\PDM\ERP-Data\Files to create "Files"
-                string scanPath = @"\\PDM\ERP-Data\Files";
-                if (!Directory.Exists(scanPath))
-                {
-                    MessageBox.Show($"The directory '{scanPath}' does not exist. Operation canceled.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                List<ProdFile> files = ScanFiles(scanPath);
-
-                // Step 4: Create PNFiles using the part numbers and files
-                List<PNFiles> pnFilesList = PNFileProcessor.GetPNFilesForPartNumbers(files, partNumbers);
-
-                // Step 5: Create the ZIP file
+                // Step 8: Create ZIP folder
                 PNFileCompressor.CompressFiles(pnFilesList, outputZipPath);
 
-                MessageBox.Show($"ZIP file created successfully at: {outputZipPath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Step 9: Notify user of success
+                MessageBox.Show($"ZIP file created successfully.\n\nProduction Files CSV: {filesLogPath}\nPN Files CSV: {pnFilesLogPath}\nZIP: {outputZipPath}",
+                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -60,7 +77,7 @@ namespace XpandNPIManager
 
         private List<ProdFile> ScanFiles(string rootDirectory)
         {
-            List<ProdFile> files = new List<ProdFile>();
+            var files = new List<ProdFile>();
 
             foreach (string filePath in Directory.GetFiles(rootDirectory, "*", SearchOption.AllDirectories))
             {
@@ -76,9 +93,17 @@ namespace XpandNPIManager
             return files;
         }
 
+        private void EnsureDirectoryExists(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            // Initialization logic if needed
         }
     }
 }

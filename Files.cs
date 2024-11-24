@@ -4,7 +4,7 @@ namespace NPILib
 {
     public class Files
     {
-        public List<ProdFile> FileList { get; private set; }
+        public List<ProdFile> FileList { get; set; } // Add public set accessor
 
         public Files()
         {
