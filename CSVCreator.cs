@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace NPILib
@@ -6,18 +7,21 @@ namespace NPILib
     public static class CSVCreator
     {
         /// <summary>
-        /// Creates a CSV file for a list of general Files.
+        /// Creates a CSV file for a list of general Files with a timestamped filename.
         /// </summary>
-        public static void CreateFilesCSV(string outputPath, Files filesInstance)
+        public static string CreateFilesCSV(Files filesInstance, string outputDirectory)
         {
             if (filesInstance == null)
-                throw new System.ArgumentNullException(nameof(filesInstance));
+                throw new ArgumentNullException(nameof(filesInstance));
 
-            if (string.IsNullOrWhiteSpace(outputPath))
-                throw new System.ArgumentException("Output path cannot be null or empty.", nameof(outputPath));
+            if (string.IsNullOrWhiteSpace(outputDirectory))
+                throw new ArgumentException("Output directory cannot be null or empty.", nameof(outputDirectory));
 
-            if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
-                throw new DirectoryNotFoundException($"The directory '{Path.GetDirectoryName(outputPath)}' does not exist.");
+            if (!Directory.Exists(outputDirectory))
+                throw new DirectoryNotFoundException($"The directory '{outputDirectory}' does not exist.");
+
+            string timestamp = DateTime.Now.ToString("dd-MM-yyyy-HH-mm");
+            string outputPath = Path.Combine(outputDirectory, $"Files{timestamp}.csv");
 
             using (var writer = new StreamWriter(outputPath))
             {
@@ -36,22 +40,26 @@ namespace NPILib
                 }
             }
 
-            System.Console.WriteLine($"CSV file successfully created at: {outputPath}");
+            Console.WriteLine($"CSV file successfully created at: {outputPath}");
+            return outputPath;
         }
 
         /// <summary>
-        /// Creates a CSV file for a list of PNFiles.
+        /// Creates a CSV file for a list of PNFiles with a timestamped filename.
         /// </summary>
-        public static void CreatePNFilesCSV(string outputPath, List<PNFiles> pnFilesList)
+        public static string CreatePNFilesCSV(List<PNFiles> pnFilesList, string outputDirectory)
         {
             if (pnFilesList == null)
-                throw new System.ArgumentNullException(nameof(pnFilesList));
+                throw new ArgumentNullException(nameof(pnFilesList));
 
-            if (string.IsNullOrWhiteSpace(outputPath))
-                throw new System.ArgumentException("Output path cannot be null or empty.", nameof(outputPath));
+            if (string.IsNullOrWhiteSpace(outputDirectory))
+                throw new ArgumentException("Output directory cannot be null or empty.", nameof(outputDirectory));
 
-            if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
-                throw new DirectoryNotFoundException($"The directory '{Path.GetDirectoryName(outputPath)}' does not exist.");
+            if (!Directory.Exists(outputDirectory))
+                throw new DirectoryNotFoundException($"The directory '{outputDirectory}' does not exist.");
+
+            string timestamp = DateTime.Now.ToString("dd-MM-yyyy-HH-mm");
+            string outputPath = Path.Combine(outputDirectory, $"PNFiles{timestamp}.csv");
 
             using (var writer = new StreamWriter(outputPath))
             {
@@ -67,7 +75,8 @@ namespace NPILib
                 }
             }
 
-            System.Console.WriteLine($"CSV file for PNFiles successfully created at: {outputPath}");
+            Console.WriteLine($"CSV file for PNFiles successfully created at: {outputPath}");
+            return outputPath;
         }
     }
 }
