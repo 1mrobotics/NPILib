@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPILib", "NPILib.csproj", "{996FFB26-15BA-4739-9C1E-50D5188ADD2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XpandNPIManager", "..\XpandNPIManager\XpandNPIManager.csproj", "{7AAAA060-EA8A-416A-A951-FB161039FAFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{996FFB26-15BA-4739-9C1E-50D5188ADD2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{996FFB26-15BA-4739-9C1E-50D5188ADD2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{996FFB26-15BA-4739-9C1E-50D5188ADD2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{996FFB26-15BA-4739-9C1E-50D5188ADD2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AAAA060-EA8A-416A-A951-FB161039FAFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AAAA060-EA8A-416A-A951-FB161039FAFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AAAA060-EA8A-416A-A951-FB161039FAFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AAAA060-EA8A-416A-A951-FB161039FAFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3687D80B-7EC4-4375-A06B-B2EE93DBEA47}
+	EndGlobalSection
+EndGlobal

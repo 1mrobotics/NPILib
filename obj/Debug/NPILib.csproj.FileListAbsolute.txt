@@ -1,0 +1,12 @@
+C:\NPILib\bin\Debug\NPILib.dll
+C:\NPILib\bin\Debug\NPILib.pdb
+C:\NPILib\obj\Debug\NPILib.csproj.AssemblyReference.cache
+C:\NPILib\obj\Debug\NPILib.csproj.CoreCompileInputs.cache
+C:\NPILib\obj\Debug\NPILib.dll
+C:\NPILib\obj\Debug\NPILib.pdb
+C:\NPILib\NPILib\bin\Debug\NPILib.dll
+C:\NPILib\NPILib\bin\Debug\NPILib.pdb
+C:\NPILib\NPILib\obj\Debug\NPILib.csproj.AssemblyReference.cache
+C:\NPILib\NPILib\obj\Debug\NPILib.csproj.CoreCompileInputs.cache
+C:\NPILib\NPILib\obj\Debug\NPILib.dll
+C:\NPILib\NPILib\obj\Debug\NPILib.pdb

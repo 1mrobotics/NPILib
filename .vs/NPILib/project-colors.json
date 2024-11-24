@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "996ffb26-15ba-4739-9c1e-50d5188add2d": {
+      "ProjectGuid": "996ffb26-15ba-4739-9c1e-50d5188add2d",
+      "DisplayName": "NPILib",
+      "ColorIndex": 0
+    },
+    "7aaaa060-ea8a-416a-a951-fb161039faff": {
+      "ProjectGuid": "7aaaa060-ea8a-416a-a951-fb161039faff",
+      "DisplayName": "XpandNPIManager",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}
