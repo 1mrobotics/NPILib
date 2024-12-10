@@ -34,6 +34,8 @@ namespace NPILib
                 XFont titleFont = new XFont("Arial", 18, XFontStyle.Bold);
                 XFont headerFont = new XFont("Arial", 12, XFontStyle.Bold);
                 XFont regularFont = new XFont("Arial", 10, XFontStyle.Regular);
+                XFont subtitleFont = new XFont("Arial", 10, XFontStyle.Regular);
+
                 double leftMargin = 40, rightMargin = 40, topMargin = 50, bottomMargin = 50;
 
                 PdfPage page = pdf.AddPage();
@@ -42,30 +44,26 @@ namespace NPILib
                 double availableWidth = page.Width - leftMargin - rightMargin;
                 double[] columnWidths = CalculateColumnWidths(pnFilesList, availableWidth);
 
-                double y = DrawTitle(gfx,
-                     new XFont("Arial", 20, XFontStyle.Bold), // Title font
-                     new XFont("Arial", 10, XFontStyle.Regular), // Subtitle font
-                     leftMargin, availableWidth, topMargin);
+                double y = DrawTitle(gfx, titleFont, subtitleFont, leftMargin, availableWidth, topMargin);
 
+                // Draw headers and get the next Y position
+                y = DrawHeaders(gfx, headerFont, y, columnWidths);
+                int rowIndex = 1; // Start row numbering at 1
 
-                DrawHeaders(gfx, headerFont, y, columnWidths);
-                y += 20;
-
-                int rowIndex = 1; // Start with row 1
+                // Start drawing rows from the returned Y position
                 foreach (var pnFile in pnFilesList)
                 {
                     if (y > page.Height - bottomMargin)
                     {
                         page = pdf.AddPage();
                         gfx = XGraphics.FromPdfPage(page);
-                        y = topMargin;
-                        DrawHeaders(gfx, headerFont, y, columnWidths);
-                        y += 20;
+                        y = DrawHeaders(gfx, headerFont, topMargin, columnWidths);
                     }
 
                     DrawRow(gfx, regularFont, y, columnWidths, pnFile, rowIndex++);
-                    y += 20;
+                    y += 20; // Move to the next row position
                 }
+
 
                 pdf.Save(outputPath);
                 Console.WriteLine($"PDF report successfully created at: {outputPath}");
@@ -113,26 +111,27 @@ namespace NPILib
             return y;
         }
 
-        private static void DrawHeaders(XGraphics gfx, XFont font, double y, double[] columnWidths)
+        private static double DrawHeaders(XGraphics gfx, XFont font, double y, double[] columnWidths)
         {
             double x = 40; // Left margin
             double headerHeight = 25;
 
-            // Draw header row background
+            // Draw header row background strictly within bounds
             gfx.DrawRectangle(XBrushes.LightGray, new XRect(x, y, columnWidths.Sum(), headerHeight));
 
-            // Headers with adjusted column names
+            // Draw header text
             string[] headers = { "Row", "Part Number", "X_T Rev", "X_T Path", "PDF Rev", "PDF Path" };
-
             for (int i = 0; i < headers.Length; i++)
             {
                 gfx.DrawString(headers[i], font, XBrushes.Black, new XRect(x + 5, y + 5, columnWidths[i] - 10, headerHeight - 10), XStringFormats.TopLeft);
                 x += columnWidths[i];
             }
 
-            // Draw a line below the headers to separate them from the first row
-            gfx.DrawLine(XPens.Black, 40, y + headerHeight, 40 + columnWidths.Sum(), y + headerHeight);
+            // Leave a clean gap by returning the next starting Y position
+            return y + headerHeight + 2; // Add small padding to avoid overlap
         }
+
+
 
         private static void DrawRow(XGraphics gfx, XFont font, double y, double[] columnWidths, PNFiles pnFile, int rowIndex)
         {
