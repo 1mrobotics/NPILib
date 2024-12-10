@@ -91,7 +91,7 @@ namespace NPILib
             }
         }
 
-        
+
 
         private static double DrawTitle(XGraphics gfx, XFont titleFont, XFont subtitleFont, double leftMargin, double availableWidth, double y)
         {
@@ -113,29 +113,57 @@ namespace NPILib
             return y;
         }
 
-
         private static void DrawHeaders(XGraphics gfx, XFont font, double y, double[] columnWidths)
         {
             double x = 40; // Left margin
             double headerHeight = 25;
 
             // Draw header row background
-            gfx.DrawRectangle(XBrushes.LightGray, new XRect(x, y, columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3] + columnWidths[4], headerHeight));
+            gfx.DrawRectangle(XBrushes.LightGray, new XRect(x, y, columnWidths.Sum(), headerHeight));
 
-            // Headers with row number column added
-            string[] headers = { "Row", "Part Number", "XT Revision", "XT Path", "PDF Revision", "PDF Path" };
+            // Headers with adjusted column names
+            string[] headers = { "Row", "Part Number", "X_T Rev", "X_T Path", "PDF Rev", "PDF Path" };
 
             for (int i = 0; i < headers.Length; i++)
             {
                 gfx.DrawString(headers[i], font, XBrushes.Black, new XRect(x + 5, y + 5, columnWidths[i] - 10, headerHeight - 10), XStringFormats.TopLeft);
                 x += columnWidths[i];
             }
+
+            // Draw a line below the headers to separate them from the first row
+            gfx.DrawLine(XPens.Black, 40, y + headerHeight, 40 + columnWidths.Sum(), y + headerHeight);
         }
 
         private static void DrawRow(XGraphics gfx, XFont font, double y, double[] columnWidths, PNFiles pnFile, int rowIndex)
         {
             double x = 40; // Left margin
             double rowHeight = 20;
+
+            // Define custom soft red color
+            XColor softRed = XColor.FromArgb(255, 255, 200, 200);
+
+            // Highlight conditions
+            bool highlightXT = pnFile.XTFullPath == "N/A";
+            bool highlightPDF = pnFile.PDFFullPath == "N/A";
+            bool highlightPartNumber = highlightXT || highlightPDF;
+
+            // Highlight Part Number column if there’s an issue with XT or PDF
+            if (highlightPartNumber)
+            {
+                gfx.DrawRectangle(new XSolidBrush(softRed), new XRect(x + columnWidths[0], y, columnWidths[1], rowHeight));
+            }
+
+            // Highlight XT columns if there’s an issue
+            if (highlightXT)
+            {
+                gfx.DrawRectangle(new XSolidBrush(softRed), new XRect(x + columnWidths[0] + columnWidths[1], y, columnWidths[2] + columnWidths[3], rowHeight));
+            }
+
+            // Highlight PDF columns if there’s an issue
+            if (highlightPDF)
+            {
+                gfx.DrawRectangle(new XSolidBrush(softRed), new XRect(x + columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3], y, columnWidths[4] + columnWidths[5], rowHeight));
+            }
 
             // Draw borders for each cell
             for (int i = 0; i < columnWidths.Length; i++)
@@ -170,16 +198,27 @@ namespace NPILib
 
         private static double[] CalculateColumnWidths(List<PNFiles> pnFilesList, double availableWidth)
         {
-            // Ensure Part Number column is wide enough to fit all part numbers
+            // Ensure Part Number and Row columns are wide enough
+            double maxRowNumberWidth = pnFilesList.Count.ToString().Length * 10 + 20; // Adjust dynamically
             double maxPartNumberWidth = pnFilesList.Max(p => MeasureTextWidth(p.PartNumber, new XFont("Arial", 10, XFontStyle.Regular)));
+            double rowNumberWidth = Math.Max(maxRowNumberWidth, 50);
             double partNumberWidth = Math.Max(maxPartNumberWidth + 20, availableWidth * 0.2);
 
             // Allocate remaining space for other columns
-            double remainingWidth = availableWidth - partNumberWidth - 50; // Account for Row column
+            double remainingWidth = availableWidth - rowNumberWidth - partNumberWidth;
             double otherColumnWidth = remainingWidth / 4;
 
-            return new[] { 50, partNumberWidth, otherColumnWidth, otherColumnWidth, otherColumnWidth, otherColumnWidth };
+            return new[] { rowNumberWidth, partNumberWidth, otherColumnWidth, otherColumnWidth, otherColumnWidth, otherColumnWidth };
         }
+
+        private static string TruncatePath(string path, int maxLength)
+        {
+            if (path.Length <= maxLength) return path;
+            int visibleLength = maxLength / 2 - 3; // Adjust for ellipsis
+            return path.Substring(0, visibleLength) + "..." + path.Substring(path.Length - visibleLength);
+        }
+
+
 
         private static double MeasureTextWidth(string text, XFont font)
         {
@@ -193,13 +232,6 @@ namespace NPILib
             }
         }
 
-
-        private static string TruncatePath(string path, int maxLength)
-        {
-            if (path.Length <= maxLength) return path;
-            int visibleLength = maxLength / 2 - 3; // Adjust for ellipsis
-            return path.Substring(0, visibleLength) + "..." + path.Substring(path.Length - visibleLength);
-        }
 
 
     }
