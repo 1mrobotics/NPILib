@@ -21,6 +21,13 @@ namespace NPILib
                 Directory.CreateDirectory(outputDirectory);
             }
 
+            // Check if the file already exists
+            if (System.IO.File.Exists(outputZipPath))
+            {
+                // Prompt the user or decide automatically (here we choose to delete the file)
+                System.IO.File.Delete(outputZipPath);
+            }
+
             using (var zipArchive = ZipFile.Open(outputZipPath, ZipArchiveMode.Create))
             {
                 foreach (var pnFile in pnFilesList)
@@ -30,6 +37,7 @@ namespace NPILib
                 }
             }
         }
+
 
         private static void AddFileToZip(ZipArchive zipArchive, string filePath)
         {
