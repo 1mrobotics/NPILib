@@ -138,6 +138,7 @@
     <Compile Include="CSVCreator.cs" />
     <Compile Include="CSVHelper.cs" />
     <Compile Include="Date.cs" />
+    <Compile Include="FileProcessor.cs" />
     <Compile Include="ProdFile.cs" />
     <Compile Include="FileDisplay.cs" />
     <Compile Include="FileNameValidator.cs" />
